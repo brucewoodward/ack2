@@ -438,7 +438,7 @@ File presentation:
 File finding:
   -f                    Only print the files found, without searching.
                         The PATTERN must not be specified.
-  -g REGEX              Same as -f, but only print files matching REGEX.
+  -g                    Same as -f, but only print files matching PATTERN.
   --sort-files          Sort the found files lexically.
   --show-types          Show which types each file has.
 

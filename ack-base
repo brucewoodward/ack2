@@ -149,7 +149,7 @@ sub main {
     my $resources;
     if ( $App::Ack::is_filter_mode ) {
         $resources    = App::Ack::Resources->from_stdin( $opt );
-        if( my $regex = $opt->{regex} ) {
+        if ( my $regex = $opt->{regex} ) {
             $opt->{regex} = App::Ack::build_regex( $regex, $opt );
         }
         else {
@@ -159,12 +159,12 @@ sub main {
     else {
         if ( $opt->{f} || $opt->{lines} ) {
             if ( $opt->{regex} ) {
-                App::Ack::warn( "regex ($opt->{regex}) specified with -f or -g" );
+                App::Ack::warn( "regex ($opt->{regex}) specified with -f or --lines" );
                 App::Ack::exit_from_ack( 0 ); # XXX the 0 is misleading
             }
         }
         else {
-            if( my $regex = $opt->{regex} ) {
+            if ( my $regex = $opt->{regex} ) {
                 $opt->{regex} = App::Ack::build_regex( $regex, $opt );
             }
             else {
@@ -172,7 +172,7 @@ sub main {
             }
         }
         my @start;
-        if(my $filename = $opt->{files_from}) {
+        if ( my $filename = $opt->{files_from} ) {
             my $fh;
             open $fh, '<', $filename or die "$filename: $!";
             while(<$fh>) {
@@ -180,7 +180,8 @@ sub main {
                 push @start, $_;
             }
             close $fh;
-        } else {
+        }
+        else {
             @start = @ARGV;
         }
         unless(@start == 1 && -f $start[0]) {
@@ -215,6 +216,14 @@ RESOURCES:
             print $resource->name, $ors;
             ++$nmatches;
             last RESOURCES if defined($max_count) && $nmatches >= $max_count;
+        }
+        elsif ( $opt->{g} ) {
+            # XXX We may want to combine the -f and -g blocks, but right now feels like premature optimization.
+            if ( $resource->name =~ /$opt->{regex}/o ) {
+                print $resource->name, $ors;
+                ++$nmatches;
+                last RESOURCES if defined($max_count) && $nmatches >= $max_count;
+            }
         }
         elsif ( $opt->{lines} ) {
             my $print_filename = $opt->{H} && !$opt->{h};
