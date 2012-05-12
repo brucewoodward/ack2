@@ -103,9 +103,6 @@ sub _compile_file_filter {
 
     my %is_member_of_starting_set = map { ($_ => 1) } @{$start};
 
-    my $filter_re         = $opt->{G} ? qr/$opt->{G}/ : undef;
-    my $invert_file_match = $opt->{invert_file_match};
-
     return sub {
         return 1 if $is_member_of_starting_set{ $File::Next::name };
 
@@ -131,12 +128,6 @@ sub _compile_file_filter {
                     $match_found = 0;
                     last;
                 }
-            }
-        }
-        if ( $match_found && defined($filter_re) ) {
-            $match_found = $File::Next::name =~ /$filter_re/;
-            if ($invert_file_match) {
-                $match_found = !$match_found;
             }
         }
         return $match_found;
@@ -269,9 +260,8 @@ RESOURCES:
         }
         elsif ( $opt->{l} ) {
             my $matches = App::Ack::resource_has_match( $resource, $opt );
-            my $invert  = $opt->{v};
 
-            if ( $invert ? !$matches : $matches ) {
+            if ( $opt->{v} ? !$matches : $matches ) {
                 # XXX printing should probably happen inside of App::Ack
                 print $resource->name, $ors;
                 ++$nmatches;

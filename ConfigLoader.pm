@@ -152,7 +152,6 @@ sub get_arg_spec {
                                     my ( undef, $file ) = @_;
                                     push @{ $opt->{ifiles} }, $file;
                                },
-        'invert-file-match' => \$opt->{invert_file_match},
         'lines=s'           => sub { shift; my $val = shift; push @{$opt->{lines}}, $val },
         'l|files-with-matches'
                             => \$opt->{l},
