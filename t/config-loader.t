@@ -76,6 +76,7 @@ my %defaults = (
     filters           => [ App::Ack::Filter::Default->new ],
     flush             => undef,
     follow            => undef,
+    g                 => undef,
     h                 => undef,
     H                 => undef,
     heading           => undef,
