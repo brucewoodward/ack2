@@ -218,8 +218,8 @@ RESOURCES:
             last RESOURCES if defined($max_count) && $nmatches >= $max_count;
         }
         elsif ( $opt->{g} ) {
-            # XXX We may want to combine the -f and -g blocks, but right now feels like premature optimization.
-            if ( $resource->name =~ /$opt->{regex}/o ) {
+            my $is_match = ( $resource->name =~ /$opt->{regex}/o );
+            if ( $opt->{v} ? !$is_match : $is_match ) {
                 print $resource->name, $ors;
                 ++$nmatches;
                 last RESOURCES if defined($max_count) && $nmatches >= $max_count;
@@ -268,9 +268,9 @@ RESOURCES:
             }
         }
         elsif ( $opt->{l} ) {
-            my $matches = App::Ack::resource_has_match( $resource, $opt );
+            my $is_match = App::Ack::resource_has_match( $resource, $opt );
 
-            if ( $opt->{v} ? !$matches : $matches ) {
+            if ( $opt->{v} ? !$is_match : $is_match ) {
                 # XXX printing should probably happen inside of App::Ack
                 print $resource->name, $ors;
                 ++$nmatches;

@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 35;
+use Test::More tests => 29;
 
 use lib 't';
 use Util;
@@ -138,9 +138,8 @@ FILE_ON_COMMAND_LINE_IS_ALWAYS_SEARCHED_EVEN_WITH_WRONG_TYPE: {
 
 
 QUOTEMETA_FILE_NOT: {
-    # -Q does nothing for -g regex
+    # -Q works on -g regex
     my @expected = qw(
-        t/ack-g.t
     );
     my $regex = 'ack-g.t$';
 
@@ -152,33 +151,15 @@ QUOTEMETA_FILE_NOT: {
 }
 
 WORDS_FILE_NOT: {
-    # -w does nothing for -g regex
-    my @expected = qw(
-        t/text/freedom-of-choice.txt
-    );
+    # -w works on -g
+    my @expected = qw();
     my $regex = 'free';
 
     my @files = qw( t/text/ );
-    my @args = ( '-w', '-g', $regex );
+    my @args = ( '-w', '-g', $regex ); # The -w means "free" won't match "freedom"
     my @results = run_ack( @args, @files );
 
     sets_match( \@results, \@expected, "Looking for $regex with '-w'." );
-}
-
-INVERT_MATCH_FILE_NOT: {
-    # -v does nothing for -g regex
-    my @expected = qw(
-        t/text/4th-of-july.txt
-        t/text/freedom-of-choice.txt
-        t/text/science-of-myth.txt
-    );
-    my $regex = 'of';
-
-    my @files = qw( t/text/ );
-    my @args = ( '-v', '-g', $regex );
-    my @results = run_ack( @args, @files );
-
-    sets_match( \@results, \@expected, "Looking for filenames NOT matching $regex." );
 }
 
 INVERT_FILE_MATCH: {
@@ -194,18 +175,6 @@ INVERT_FILE_MATCH: {
     my @results = run_ack( @args, @files );
 
     sets_match( \@results, \@expected, "Looking for file names that do not match $file_regex" );
-}
-
-G_WITH_REGEX: {
-    # specifying both -g and a regex should result in an error
-    my @files = qw( t/text );
-    my @args = qw( -g boy --match Sue );
-
-    my ($stdout, $stderr) = run_ack_with_stderr( @args, @files );
-    isnt( get_rc(), 0, 'Specifying both -g and --match must lead to an error RC' );
-    is( scalar @{$stdout}, 0, 'No normal output' );
-    is( scalar @{$stderr}, 1, 'One line of stderr output' );
-    like( $stderr->[0], qr/\Q(Sue)/, 'Error message must contain "(Sue)"' );
 }
 
 F_WITH_REGEX: {
