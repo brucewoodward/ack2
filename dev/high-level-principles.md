@@ -72,6 +72,8 @@ still be merely collections of command-line switches.
 
 * No more -G and --invert-file-match flags
 
+* -g now obeys all regex flags: -i, -w, -Q, -v
+
 
 # Features that may get added in ack 2.1+, but definitely not in 2.0
 

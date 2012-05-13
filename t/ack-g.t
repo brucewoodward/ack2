@@ -84,9 +84,10 @@ BACK_ANCHOR: {
 }
 
 
-# -i no longer applies to regex given by -g
-NOT_CASE_INSENSITIVE: {
-    my @expected = qw();
+CASE_INSENSITIVE_DASH_I: {
+    my @expected = qw(
+        t/swamp/pipe-stress-freaks.F
+    );
     my $regex = 'PIPE';
 
     my @files = qw( . );
@@ -97,8 +98,8 @@ NOT_CASE_INSENSITIVE: {
 }
 
 
-# ... but can be emulated with (?i:regex)
-CASE_INSENSITIVE: {
+# Can also be emulated with (?i:regex)
+CASE_INSENSITIVE_IN_REGEX: {
     my @expected = qw(
         t/swamp/pipe-stress-freaks.F
     );
