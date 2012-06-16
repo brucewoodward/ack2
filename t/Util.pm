@@ -152,38 +152,24 @@ sub run_cmd {
 
             select( $rin, undef, $ein, undef );
 
-            # XXX is this the best way to handle this?
-            if ( $stdout_read && vec( $ein, fileno($stdout_read), 1 ) ) {
+            if ( $stdout_read && vec( $rin, fileno($stdout_read), 1 ) ) {
+                while (my $line = <$stdout_read>) {
+                    push @stdout, $line;
+                }
+            }
+            if ( $stdout_read && ( vec( $ein, fileno($stdout_read), 1 ) or eof( $stdout_read ) ) ) {
                 close $stdout_read;
                 undef $stdout_read;
             }
-            if ( $stderr_read && vec( $ein, fileno($stderr_read), 1 ) ) {
-                close $stderr_read;
-                undef $stderr_read;
-            }
-
-            if ( $stdout_read && vec( $rin, fileno($stdout_read), 1 ) ) {
-                my $line = <$stdout_read>;
-
-                if ( defined( $line ) ) {
-                    push @stdout, $line;
-                }
-                else {
-                    close $stdout_read;
-                    undef $stdout_read;
-                }
-            }
 
             if ( $stderr_read && vec( $rin, fileno($stderr_read), 1 ) ) {
-                my $line = <$stderr_read>;
-
-                if ( defined( $line ) ) {
+                while (my $line = <$stderr_read>) {
                     push @stderr, $line;
                 }
-                else {
-                    close $stderr_read;
-                    undef $stderr_read;
-                }
+            }
+            if ( $stderr_read && ( vec( $ein, fileno($stderr_read), 1 ) or eof( $stderr_read ) ) ) {
+                close $stderr_read;
+                undef $stderr_read;
             }
         }
 
